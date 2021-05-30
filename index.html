@@ -28,7 +28,7 @@
 <body>
   <fieldset>
     <legend>Error Calculator</legend>
-    <input type="number" name="first-num" id="first-num" />
+    <input type="text" name="first-num" id="first-num" />
     <select name="operator" id="operator">
       <option>+</option>
       <option>-</option>
@@ -55,18 +55,113 @@
     <button>Trigger a Global Error</button>
   </section>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+
+
+    class InputError extends Error {
+      constructor(message, cause) {
+        super(message);
+        this.cause = cause;
+        this.name = 'InputError';
+      }
+    }
+
+
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+        if(error instanceof ReferenceError) {
+          throw new InputError('first input is not valid', error);
+        }
+        else {
+          console.log('Invalid math stuff');
+        }
+      }
+      
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+
+    errorBtns[0].addEventListener('click', () => {
+      console.log('Console Log Demo');
+    });
+
+    errorBtns[1].addEventListener('click', () => {
+      console.error('Console Error Demo');
+    });
+
+    errorBtns[2].addEventListener('click', () => {
+      console.dir(document.body);
+    });
+
+    errorBtns[3].addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+
+    errorBtns[4].addEventListener('click', () => {
+      console.group('current log group');
+    });
+
+    errorBtns[5].addEventListener('click', () => {
+      console.groupEnd('current log group');
+    });
+
+    errorBtns[6].addEventListener('click', () => {
+      console.table([
+        {
+          course: 'CSE 110',
+          professor: 'Powell',
+        },
+        
+        {
+          course: 'CSE 101',
+          professor: 'Dasgupta',
+        },
+
+        {
+          course: 'ECE 140B',
+          professor: 'Ramsin & Rick',
+        },
+
+        {
+          course: 'ECE 45',
+          professor: 'Antipa',
+        }
+        
+      ])
+    });
+
+    errorBtns[7].addEventListener('click', () => {
+      console.time('The Timer');
+    });
+
+    errorBtns[8].addEventListener('click', () => {
+      console.timeEnd('The Timer');
+    });
+
+    errorBtns[9].addEventListener('click', () => {
+      console.trace();
+    });
+
+    errorBtns[10].addEventListener('click', () => {
+      window.TrackJS && TrackJS.install({ 
+      token: "5583ef056fa34d1a80ff53f5e3993efc"
+      // for more configuration options, see https://docs.trackjs.com
+      });
+    });
+
+
+
+    
+
   </script>
 </body>
 </html>
